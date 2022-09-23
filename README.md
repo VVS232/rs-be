@@ -1,1 +1,1 @@
-# rs-be
+Made during the "AWS & node.js" course
