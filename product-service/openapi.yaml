@@ -6,9 +6,9 @@ info:
     contact:
         email: teenwolf23299@gmail.com
 
-    version: 1.0.0
+    version: 1.0.1
 servers:
-    - url: https://9ca9anb7tc.execute-api.eu-west-1.amazonaws.com/dev/
+    - url: https://ml8i1o232a.execute-api.eu-west-1.amazonaws.com/dev/
 paths:
     /products:
         get:
@@ -20,6 +20,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/products'
+        post:
+            description: post new product
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                title:
+                                    type: string
+                                    example: 'product title'
+                                description:
+                                    type: string
+                                    example: 'product description'
+                                count:
+                                    type: number
+                                    example: 10
+                                price:
+                                    type: integer
+                                    example: 12.20
+            responses:
+                '201':
+                    description: 'successfully created'
 
     /products/{productId}:
         get:
@@ -31,11 +55,7 @@ paths:
                   required: true
                   schema:
                       type: string
-                      default: available
-                      enum:
-                          - available
-                          - pending
-                          - sold
+                      example: '1111-1111-1111-111'
             responses:
                 '200':
                     description: successful operation
@@ -62,9 +82,9 @@ components:
                     description:
                         type: string
                         example: 'product description'
-                    inStock:
-                        type: boolean
-                        example: true
+                    count:
+                        type: number
+                        example: 10
                     price:
                         type: integer
                         example: 12.20
@@ -80,9 +100,9 @@ components:
                 description:
                     type: string
                     example: 'product description'
-                inStock:
-                    type: boolean
-                    example: true
+                count:
+                    type: number
+                    example: 10
                 price:
                     type: integer
                     example: 12.20
