@@ -1,10 +1,25 @@
-import { Product, productList } from 'src/mocks';
+import { Product } from 'src/mocks';
 import { APIGatewayProxyHandler } from 'aws-lambda';
+import { ddbDocClient } from 'src/db/dynamo-doc-client';
+import { GetCommand } from '@aws-sdk/lib-dynamodb';
 
 export const getProductById: APIGatewayProxyHandler = async (event) => {
-    const { productId } = event.pathParameters;
-    const product = getProduct(productList, productId);
-    if (!product)
+    console.log('Get by Id function was called with ' + event);
+
+    const product = await ddbDocClient.send(
+        new GetCommand({
+            TableName: process.env.PRODUCTS_TABLE_NAME,
+            Key: { id: event.pathParameters.productId }
+        })
+    );
+    const stock = await ddbDocClient.send(
+        new GetCommand({
+            TableName: process.env.STOCK_TABLE_NAME,
+            Key: { product_id: event.pathParameters.productId }
+        })
+    );
+    const data = { ...product.Item, count: stock.Item?.count || 0 };
+    if (!data)
         return {
             headers: {
                 'Access-Control-Allow-Origin': '*',
@@ -19,7 +34,7 @@ export const getProductById: APIGatewayProxyHandler = async (event) => {
             'Access-Control-Allow-Credentials': true
         },
         statusCode: 200,
-        body: JSON.stringify(product)
+        body: JSON.stringify(data)
     };
 };
 
