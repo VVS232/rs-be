@@ -21,6 +21,7 @@ export const importProductFile: APIGatewayProxyHandler = async (event) => {
         Key: `uploaded/${name}`,
         ContentType: 'text/csv'
     });
+
     return {
         headers: {
             'Access-Control-Allow-Origin': '*',
