@@ -8,7 +8,18 @@ const importProductFileFunctionConfig: AWS['functions'][number] = {
         {
             http: {
                 method: 'GET',
-                cors: true,
+                cors: {
+                    origin: '*',
+                    headers: [
+                        'Content-Type',
+                        'X-Amz-Date',
+                        'Authorization',
+                        'X-Api-Key',
+                        'X-Amz-Security-Token',
+                        'X-Amz-User-Agent'
+                    ],
+                    allowCredentials: true
+                },
                 path: 'import',
                 request: {
                     parameters: {
@@ -16,6 +27,13 @@ const importProductFileFunctionConfig: AWS['functions'][number] = {
                             name: true
                         }
                     }
+                },
+                authorizer: {
+                    name: 'basicAuthorizer',
+                    arn: 'arn:aws:lambda:eu-west-1:826106127846:function:rs-authorization-service-dev-authorizer',
+                    resultTtlInSeconds: 0,
+                    identitySource: 'method.request.header.Authorization',
+                    type: 'token'
                 }
             }
         }
