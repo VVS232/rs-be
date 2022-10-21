@@ -10,8 +10,10 @@
     "node": ">=14.15.0"
   },
   "dependencies": {
+    "@aws-sdk/client-sns": "^3.188.0",
     "@middy/core": "^2.5.3",
     "@middy/http-json-body-parser": "^2.5.3",
+    "jsonschema": "^1.4.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

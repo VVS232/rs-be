@@ -3,6 +3,7 @@ import type { AWS } from '@serverless/typescript';
 import getProductById from '@functions/getProductsById';
 import getProductList from '@functions/getProductsList';
 import createProduct from '@functions/createProduct';
+import catalogBatch from '@functions/catalogBatchProcess';
 
 const serverlessConfiguration: AWS = {
     service: 'product-service',
@@ -19,7 +20,11 @@ const serverlessConfiguration: AWS = {
         // },
         environment: {
             PRODUCTS_TABLE_NAME: '${env:PRODUCTS_TABLE_NAME}',
-            STOCK_TABLE_NAME: '${env:STOCK_TABLE_NAME}'
+            STOCK_TABLE_NAME: '${env:STOCK_TABLE_NAME}',
+            SQS_ARN: '${env:SQS_ARN}',
+            TOPIC_ARN: {
+                Ref: 'SNSTopic'
+            }
         },
         iamRoleStatements: [
             {
@@ -31,11 +36,18 @@ const serverlessConfiguration: AWS = {
                     'dynamodb:PutItem'
                 ],
                 Resource: '*'
+            },
+            {
+                Effect: 'Allow',
+                Action: 'sns:*',
+                Resource: {
+                    Ref: 'SNSTopic'
+                }
             }
         ]
     },
     // import the function via paths
-    functions: { getProductList, getProductById, createProduct },
+    functions: { getProductList, getProductById, createProduct, catalogBatch },
     package: { individually: true },
     custom: {
         esbuild: {
@@ -51,6 +63,22 @@ const serverlessConfiguration: AWS = {
     },
     resources: {
         Resources: {
+            SNSTopic: {
+                Type: 'AWS::SNS::Topic',
+                Properties: {
+                    TopicName: 'rs-product-topic'
+                }
+            },
+            SNSSubscription: {
+                Type: 'AWS::SNS::Subscription',
+                Properties: {
+                    Endpoint: 'teenwolf23299@gmail.com',
+                    Protocol: 'email',
+                    TopicArn: {
+                        Ref: 'SNSTopic'
+                    }
+                }
+            },
             products: {
                 Type: 'AWS::DynamoDB::Table',
                 Properties: {

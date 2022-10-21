@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.185.0",
+    "@aws-sdk/client-sqs": "^3.186.0",
     "@aws-sdk/s3-request-presigner": "^3.185.0",
     "@middy/core": "^2.5.3",
     "@middy/http-json-body-parser": "^2.5.3",
-    "csv-parser": "^3.0.0"
+    "csv-parser": "^3.0.0",
+    "jsonschema": "^1.4.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@serverless/typescript": "^3.21.0",
